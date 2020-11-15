@@ -2,7 +2,7 @@ import { Router } from 'express'
 
 import UserController from './controllers/UserController'
 import SessionController from './controllers/SessionController'
-import ProjectController from './controllers/Project/ProjectController'
+import ProjectController from './controllers/ProjectController'
 import { authorize } from './middleware/auth'
  
 const routes = Router()
@@ -24,8 +24,8 @@ routes.get('/projects', ProjectController.getProjects)
 routes.post('/projects/:project_id/coauthor/:user_id/add', authorize, ProjectController.addCoauthor)
 routes.post('/projects/:project_id/coauthor/:user_id/remove', authorize, ProjectController.removeCoauthor)
 
-routes.post('/projects/:project_id/client/:user_id/add')
-routes.post('/projects/:project_id/client/:user_id/remove')
+routes.post('/projects/:project_id/client/:user_id/add', authorize, ProjectController.addClient)
+routes.post('/projects/:project_id/client/:user_id/remove', authorize, ProjectController.removeClient)
 
 //add friend
 //see all friends

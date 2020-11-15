@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import Project from '../../models/Project'
+import Project from '../models/Project'
 
 const MAX_PROJECTS_PER_USER = 3
 
@@ -89,6 +89,52 @@ const ProjectController = {
             })
             // @ts-ignore -- typescript does not recognize mongooses's pull method
             project.coAuthors?.pull(user_id)
+            await project.save()
+
+            return res.status(200).json(project)
+        } catch(err) {
+            return res.status(500).json(err)
+        }
+    },
+    async addClient(req: Request, res: Response) {
+        const projectOwnerId = req.userId
+        const { project_id, user_id } = req.params
+        try {
+            const belongsToOwner = await Project.findById(project_id)            
+            if (!belongsToOwner) return res.status(404).json({ 
+                message: 'Project not found' 
+            })            
+            if (String(belongsToOwner?.owner) !== projectOwnerId) return res.status(403).json({ 
+                message: 'Operation not allowed' 
+            })
+
+            let project = belongsToOwner
+            if (project.clients?.includes(user_id)) return res.status(400).json({ 
+                message: 'User already is a client of the project'
+            })
+
+            project.clients?.push(user_id)
+            await project.save()
+
+            return res.status(200).json(project)
+        } catch(err) {
+            return res.status(500).json(err)
+        }
+    },
+    async removeClient(req: Request, res: Response) {
+        const projectOwnerId = req.userId
+        const { project_id, user_id } = req.params
+        try {
+            const belongsToOwner = await Project.findById(project_id)            
+            if (!belongsToOwner) return res.status(404).json({ message: 'Project not found' })            
+            if (String(belongsToOwner?.owner) !== projectOwnerId) return res.status(403).json({ message: 'Operation not allowed' })
+        
+            let project = belongsToOwner
+            if (!project.clients?.includes(user_id)) return res.status(400).json({ 
+                message: 'User is not a client of the project'
+            })
+            // @ts-ignore -- typescript does not recognize mongooses's pull method
+            project.clients?.pull(user_id)
             await project.save()
 
             return res.status(200).json(project)
