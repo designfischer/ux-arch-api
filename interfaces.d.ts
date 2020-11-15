@@ -10,3 +10,10 @@ interface ICreateUserRequest {
 interface IDeleteUserRequest {
     user_email
 }
+
+interface IDesignBody {
+    category: 'reference' | 'proposal' ,
+    title: string,    
+    thumbnail: string,
+    score?: number,    
+}

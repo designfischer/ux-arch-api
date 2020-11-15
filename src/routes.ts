@@ -3,6 +3,7 @@ import { Router } from 'express'
 import UserController from './controllers/UserController'
 import SessionController from './controllers/SessionController'
 import ProjectController from './controllers/ProjectController'
+import DesignController from './controllers/DesignController'
 import { authorize } from './middleware/auth'
  
 const routes = Router()
@@ -27,18 +28,14 @@ routes.post('/projects/:project_id/coauthor/:user_id/remove', authorize, Project
 routes.post('/projects/:project_id/client/:user_id/add', authorize, ProjectController.addClient)
 routes.post('/projects/:project_id/client/:user_id/remove', authorize, ProjectController.removeClient)
 
-//add friend
-//see all friends
-
-//create reference - users and coauthors
-//delete reference - users and coauthors
+routes.post('/projects/:project_id/designs', authorize, DesignController.createDesign)
+routes.delete('/projects/:project_id/designs/:design_id', authorize, DesignController.removeDesign)
+routes.get('/projects/:project_id/designs/:design_id', authorize, DesignController.getDesignById)
 
 //evaluate reference - clients
 //asses reference / users and coauthors
 
 //create project = users and coauthors
 //delete project - users and coauthors
-
-//asses project = users and coauthors
 
 export default routes
