@@ -30,7 +30,11 @@ routes.post('/projects/:project_id/client/:user_id/remove', authorize, ProjectCo
 
 routes.post('/projects/:project_id/designs', authorize, DesignController.createDesign)
 routes.delete('/projects/:project_id/designs/:design_id', authorize, DesignController.removeDesign)
-routes.get('/projects/:project_id/designs/:design_id', authorize, DesignController.getDesignById)
+
+routes.get('/projects/:project_id/designs/references', DesignController.getAllReferences)
+routes.get('/projects/:project_id/designs/proposals', DesignController.getAllProposals)
+
+routes.get('/projects/designs/:design_id', DesignController.getDesignById)
 
 //evaluate reference - clients
 //asses reference / users and coauthors

@@ -63,19 +63,50 @@ const DesignController = {
         }
     },
     async getDesignById(req: Request, res: Response) {
-        try {} catch(err) {
+
+        const { design_id } = req.params
+
+        try {
+           const design = await Design.findById(design_id).populate('project')
+           if (!design) return res.status(404).json({ message: 'Not found' })
+
+           return res.status(200).json(design)
+        } catch(err) {
             return res.status(500).json(err)
         }
     },
     async getAllReferences(req: Request, res: Response) {
-        try {} catch(err) {
+
+        const { project_id } = req.params
+
+        try {
+
+            const referencesOfAProject = await DesignRepository.findAllReferencesByProjectId(project_id)
+            return res.status(200).json(referencesOfAProject)
+
+        } catch(err) {
             return res.status(500).json(err)
         }
     },
     async getAllProposals(req: Request, res: Response) {
-        try {} catch(err) {
+
+        const { project_id } = req.params
+
+        try {
+
+            const proposalsOfAProject = await DesignRepository.findAllProposalsByProjectId(project_id)
+            return res.status(200).json(proposalsOfAProject)
+
+        } catch(err) {
             return res.status(500).json(err)
         }
+    },
+    async getAllDesigns(req: Request, res: Response) {
+
+        const { project_id } = req.params
+
+        try {} catch(err) {}
+
     }
 }
 
@@ -102,5 +133,9 @@ const DesignRepository = {
     async findAllReferencesByProjectId(projectId: string) {
         const references = await Design.find({ project: projectId }).where({ category: 'reference' })
         return references
+    },
+    async findAllProposalsByProjectId(projectId: string) {
+        const proposals = await Design.find({ project: projectId }).where({ category: 'proposal' })
+        return proposals
     }
 }
